@@ -16,7 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -44,7 +45,7 @@ fun NewsListScreen(
 
     LaunchedEffect(key1 = effectFlow, block = {
         effectFlow?.onEach { effect ->
-            if(effect is NewsListStateManagment.Effect.DataWasLoaded)
+            if (effect is NewsListStateManagment.Effect.DataWasLoaded)
                 scaffoldState.snackbarHostState.showSnackbar(
                     message = "News data are loaded.",
                     duration = SnackbarDuration.Short
@@ -70,18 +71,21 @@ fun NewsListScreen(
 @Composable
 private fun CategoriesAppBar() {
     TopAppBar(
-        title = { Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "NewsApp"
-        ) },
-        navigationIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                modifier = Modifier.padding(horizontal = 2.dp),
-                contentDescription = "Action icon"
-            )
-        },
-        backgroundColor = MaterialTheme.colors.background
+        title = {Text(text = "NewsApp")},
+        actions =
+        {
+            IconButton(onClick = {
+                //TODO Search action
+            }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        modifier = Modifier.padding(5.dp),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+            }
+        }
+
     )
 }
 
@@ -115,7 +119,7 @@ fun NewsListRow(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             .clickable {
                 val url = NewsDataDetails(item.url)
-                navController.currentBackStackEntry?.savedStateHandle?.set("news",url)
+                navController.currentBackStackEntry?.savedStateHandle?.set("news", url)
                 navController.navigate(Screen.NewsDetail.route)
             }
     ) {
@@ -129,10 +133,10 @@ fun NewsListRow(
                 expandedLines = if (expanded) 10 else 2,
                 modifier = Modifier
                     .padding(
-                        start = 8.dp,
+                        start = 10.dp,
                         end = 8.dp,
-                        top = 24.dp,
-                        bottom = 24.dp
+                        top = 10.dp,
+                        bottom = 10.dp
                     )
                     .fillMaxWidth(0.80f)
                     .align(Alignment.CenterVertically)
@@ -173,7 +177,7 @@ fun NewsDetails(
             text = item?.title.toString().trim(),
             textAlign = TextAlign.Start,
             style = MaterialTheme.typography.subtitle1,
-           // maxLines = 2,
+            // maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
         if (item?.content?.trim()?.isNotEmpty() == true)
@@ -200,9 +204,10 @@ fun NewsThumbnail(
             builder = iconTransformationBuilder
         ),
         modifier = Modifier
-            .size(100.dp,100.dp)
-            .padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
-        contentDescription = "News thumbnail picture",
+            .size(120.dp, 120.dp)
+            .padding(start = 10.dp, top = 10.dp, bottom = 10.dp),
+        contentDescription = null,
+        contentScale = ContentScale.FillBounds
     )
 }
 
