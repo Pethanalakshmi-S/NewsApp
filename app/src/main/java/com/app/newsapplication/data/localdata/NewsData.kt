@@ -1,6 +1,12 @@
-package com.app.newsapplication.data.model
+package com.app.newsapplication.data.localdata
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "newsdata")
 data class NewsData(
+    @PrimaryKey(autoGenerate = true)
+    var newsId:Int,
     var id: String?="",
     var content: String?="",
     var title: String?="",

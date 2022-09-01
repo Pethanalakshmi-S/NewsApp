@@ -12,6 +12,8 @@ import com.app.newsapplication.ui.home.NewsListScreen
 import com.app.newsapplication.ui.home.NewsListViewModel
 import com.app.newsapplication.ui.navigation.Screen
 import com.app.newsapplication.ui.navigation.SetupNavGraph
+import com.app.newsapplication.ui.search.SearchScreen
+import com.app.newsapplication.ui.search.SearchViewModel
 import com.app.newsapplication.ui.ui.theme.NewsApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -53,6 +55,17 @@ fun NewsListData(navController: NavHostController){
             navController.navigate("${Screen.Home.route}/${itemId}")
         },
         navController)
+}
+
+@Composable
+fun SearchListData(navController: NavHostController){
+    val searchViewModel: SearchViewModel = hiltViewModel()
+    SearchScreen(
+        state = searchViewModel.state,
+        effectFlow = searchViewModel.effects.receiveAsFlow(),
+        navController = navController,
+        viewModel = searchViewModel
+    )
 }
 
 @Preview(showBackground = true)

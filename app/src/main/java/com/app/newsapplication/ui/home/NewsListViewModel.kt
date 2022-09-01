@@ -5,7 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.newsapplication.data.repository.remotedata.NewsRemoteSource
+import com.app.newsapplication.data.localdata.NewsDAO
+import com.app.newsapplication.data.repository.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
@@ -13,8 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsListViewModel @Inject constructor(private val remoteSource: NewsRemoteSource):
-    ViewModel(){
+class NewsListViewModel @Inject constructor(
+    private val remoteSource: NewsRepository,
+    private val localSource: NewsDAO): ViewModel(){
 
         var state by mutableStateOf(
             NewsListStateManagment.State(
@@ -32,7 +34,10 @@ class NewsListViewModel @Inject constructor(private val remoteSource: NewsRemote
     }
 
     private suspend fun getTotalNewsList() {
-        val newsData = remoteSource.getNewsList()
+        var newsData = localSource.getAllNews()
+        if(newsData.isEmpty()){
+             newsData = remoteSource.getNewsList()
+        }
         viewModelScope.launch {
             state = state.copy(newsList = newsData, isLoading = false)
             effects.send(NewsListStateManagment.Effect.DataWasLoaded)

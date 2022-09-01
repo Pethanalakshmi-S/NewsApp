@@ -1,4 +1,4 @@
-package com.app.newsapplication.ui.home
+package com.app.newsapplication.ui.search
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -11,12 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,19 +26,21 @@ import coil.request.ImageRequest
 import com.app.newsapplication.data.localdata.NewsData
 import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
+import com.app.newsapplication.ui.home.NewsListStateManagment
 import com.app.newsapplication.ui.navigation.Screen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+
 @ExperimentalCoilApi
 @Composable
-fun NewsListScreen(
+fun SearchScreen(
     state: NewsListStateManagment.State,
     effectFlow: Flow<NewsListStateManagment.Effect>?,
-    onNavigationRequested: (itemId: String) -> Unit,
-    navController: NavController
-) {
+    navController: NavController,
+    viewModel: SearchViewModel
+){
     val scaffoldState: ScaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = effectFlow, block = {
@@ -56,39 +56,33 @@ fun NewsListScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            CategoriesAppBar(navController)
+            SearchBar(navController, viewModel)
         },
     ) {
         Box {
-            NewsList(newsData = state.newsList, navController)
+           NewsList(newsData = state.newsList, navController)
             if (state.isLoading)
-                LoadingBar()
+               LoadingBar()
         }
     }
-
 }
 
 @Composable
-private fun CategoriesAppBar(navController: NavController) {
-    TopAppBar(
-        title = {Text(text = "NewsApp")},
-        actions =
-        {
-            IconButton(onClick = {
-                //TODO Search action
-                navController.navigate(Screen.Search.route)
-            }) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        modifier = Modifier.padding(5.dp),
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-            }
-        }
-
-    )
+private fun SearchBar(navController: NavController, viewModel: SearchViewModel) {
+    var textState = remember{ mutableStateOf("")}
+    Row() {
+        TextField(
+            value = textState.value,
+            onValueChange = {
+                textState.value = it
+                viewModel.loadSearchedNews(it.trim())
+            },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(text = "Search News")}
+        )
+    }
 }
+
 
 @Composable
 fun NewsList(
@@ -221,3 +215,4 @@ fun LoadingBar() {
         CircularProgressIndicator()
     }
 }
+

@@ -1,4 +1,4 @@
-package com.app.newsapplication.data.repository
+package com.app.newsapplication.data.remotedata
 
 import com.app.newsapplication.data.model.NewsListDataResponse
 import retrofit2.http.GET

@@ -1,7 +1,11 @@
 package com.app.newsapplication.di
 
-import com.app.newsapplication.data.repository.NewsApi
-import com.app.newsapplication.data.repository.NewsApi.Companion.API_URL
+import android.app.Application
+import androidx.room.Room
+import com.app.newsapplication.data.localdata.AppDatabase
+import com.app.newsapplication.data.localdata.NewsDAO
+import com.app.newsapplication.data.remotedata.NewsApi
+import com.app.newsapplication.data.remotedata.NewsApi.Companion.API_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +17,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class NewsApiProvider {
+class AppModule {
     @Provides
     @Singleton
     fun provideAuthInterceptorOkHttpClient(): OkHttpClient {
@@ -41,5 +45,24 @@ class NewsApiProvider {
         retrofit: Retrofit
     ): NewsApi.Service {
         return retrofit.create(NewsApi.Service::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(application: Application): AppDatabase {
+        return Room
+            .databaseBuilder(
+                application,
+                AppDatabase::class.java,
+                "newsdatabase"
+            )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsDao(appDatabase: AppDatabase): NewsDAO {
+        return appDatabase.newsDao()
     }
 }

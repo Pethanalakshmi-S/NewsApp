@@ -1,6 +1,6 @@
 package com.app.newsapplication.ui.home
 
-import com.app.newsapplication.data.model.NewsData
+import com.app.newsapplication.data.localdata.NewsData
 
 class NewsListStateManagment {
     data class State(
