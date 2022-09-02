@@ -27,7 +27,6 @@ fun SetupNavGraph(navController: NavController) {
             val result =
                 navController.previousBackStackEntry?.savedStateHandle?.get<NewsDataDetails>("news")
             url = result?.url.toString()
-            Log.d("NavGraph", "${result?.url}")
             NewsDetailScreen(navController = navController, url.toString())
         }
         composable(route = Screen.Search.route){

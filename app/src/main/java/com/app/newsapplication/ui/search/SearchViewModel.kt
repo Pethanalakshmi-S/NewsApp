@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.newsapplication.data.localdata.NewsDAO
 import com.app.newsapplication.data.localdata.NewsData
-import com.app.newsapplication.ui.home.NewsListStateManagment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -29,14 +28,14 @@ constructor(
     var searchedNews: StateFlow<List<NewsData>> = _searchedNews
 
     var state by mutableStateOf(
-        NewsListStateManagment.State(
+        SearchStateManagement.State(
             newsList = listOf(),
             isLoading = true
         )
     )
 
         private set
-    var effects = Channel<NewsListStateManagment.Effect>(Channel.UNLIMITED)
+    var effects = Channel<SearchStateManagement.Effect>(Channel.UNLIMITED)
         private set
 
     init {
@@ -47,7 +46,7 @@ constructor(
         var newsData = localSource.searchNews(startsWith)
         viewModelScope.launch {
             state = state.copy(newsList = newsData, isLoading = false)
-            effects.send(NewsListStateManagment.Effect.DataWasLoaded)
+            effects.send(SearchStateManagement.Effect.DataWasLoaded)
         }
     }
 
@@ -55,20 +54,6 @@ constructor(
         viewModelScope.launch { getSearchNewsList(startsWith) }
         Log.d("xapp", "Loading News")
     }
-
-   /* fun insert(news: NewsData){
-        viewModelScope.launch(Dispatchers.IO) {
-            localSource.insert(news)
-            loadSearchedEmployees("")
-        }
-    }
-
-    fun clear(){
-        viewModelScope.launch(Dispatchers.IO) {
-            localSource.clear()
-            loadSearchedEmployees("")
-        }
-    }*/
 
     private fun effect(block: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) { block() }

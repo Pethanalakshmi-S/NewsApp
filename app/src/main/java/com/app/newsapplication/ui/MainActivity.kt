@@ -24,29 +24,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NewsApplicationTheme {
-                // A surface container using the 'background' color from the theme
-                val navController = rememberNavController()
-                SetupNavGraph(navController = navController)
-                //NewsApp()
+                //TODO newtwork connection check
+               // if (checkForInternet(this)) {
+                    val navController = rememberNavController()
+                    SetupNavGraph(navController = navController)
+               /* } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(text = "No internet connection",
+                                textAlign = TextAlign.Center)
+                        }
+                }*/
             }
         }
     }
 }
 
-/*
 @Composable
-fun NewsApp() {
-   val navController = rememberNavController()
-    NavHost(navController, startDestination = NavigationKeys.Route.NEWS_LIST){
-        composable(route = NavigationKeys.Route.NEWS_LIST){
-            NewsListData(navController)
-        }
-    }
-}
-*/
-
-@Composable
-fun NewsListData(navController: NavHostController){
+fun NewsListData(navController: NavHostController) {
     val viewModel: NewsListViewModel = hiltViewModel()
     NewsListScreen(
         state = viewModel.state,
@@ -54,11 +48,12 @@ fun NewsListData(navController: NavHostController){
         onNavigationRequested = { itemId ->
             navController.navigate("${Screen.Home.route}/${itemId}")
         },
-        navController)
+        navController
+    )
 }
 
 @Composable
-fun SearchListData(navController: NavHostController){
+fun SearchListData(navController: NavHostController) {
     val searchViewModel: SearchViewModel = hiltViewModel()
     SearchScreen(
         state = searchViewModel.state,
@@ -72,6 +67,6 @@ fun SearchListData(navController: NavHostController){
 @Composable
 fun DefaultPreview() {
     NewsApplicationTheme {
-       // NewsApp()
+        // NewsApp()
     }
 }

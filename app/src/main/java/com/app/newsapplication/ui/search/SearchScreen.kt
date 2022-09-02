@@ -26,7 +26,6 @@ import coil.request.ImageRequest
 import com.app.newsapplication.data.localdata.NewsData
 import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
-import com.app.newsapplication.ui.home.NewsListStateManagment
 import com.app.newsapplication.ui.navigation.Screen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -36,8 +35,8 @@ import kotlinx.coroutines.flow.onEach
 @ExperimentalCoilApi
 @Composable
 fun SearchScreen(
-    state: NewsListStateManagment.State,
-    effectFlow: Flow<NewsListStateManagment.Effect>?,
+    state: SearchStateManagement.State,
+    effectFlow: Flow<SearchStateManagement.Effect>?,
     navController: NavController,
     viewModel: SearchViewModel
 ){
@@ -45,7 +44,7 @@ fun SearchScreen(
 
     LaunchedEffect(key1 = effectFlow, block = {
         effectFlow?.onEach { effect ->
-            if (effect is NewsListStateManagment.Effect.DataWasLoaded)
+            if (effect is SearchStateManagement.Effect.DataWasLoaded)
                 scaffoldState.snackbarHostState.showSnackbar(
                     message = "News data are loaded.",
                     duration = SnackbarDuration.Short
@@ -69,7 +68,7 @@ fun SearchScreen(
 
 @Composable
 private fun SearchBar(navController: NavController, viewModel: SearchViewModel) {
-    var textState = remember{ mutableStateOf("")}
+    val textState = remember{ mutableStateOf("")}
     Row() {
         TextField(
             value = textState.value,
