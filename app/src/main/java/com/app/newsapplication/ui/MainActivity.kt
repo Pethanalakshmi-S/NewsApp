@@ -10,7 +10,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.app.newsapplication.ui.home.NewsListScreen
 import com.app.newsapplication.ui.home.NewsListViewModel
-import com.app.newsapplication.ui.navigation.Screen
 import com.app.newsapplication.ui.navigation.SetupNavGraph
 import com.app.newsapplication.ui.search.SearchScreen
 import com.app.newsapplication.ui.search.SearchViewModel
@@ -45,9 +44,6 @@ fun NewsListData(navController: NavHostController) {
     NewsListScreen(
         state = viewModel.state,
         effectFlow = viewModel.effects.receiveAsFlow(),
-        onNavigationRequested = { itemId ->
-            navController.navigate("${Screen.Home.route}/${itemId}")
-        },
         navController
     )
 }

@@ -21,14 +21,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.app.newsapplication.data.localdata.NewsData
 import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
+import com.app.newsapplication.ui.navigation.BottomBarScreen
 import com.app.newsapplication.ui.navigation.Screen
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -38,7 +46,6 @@ import kotlinx.coroutines.flow.onEach
 fun NewsListScreen(
     state: NewsListStateManagment.State,
     effectFlow: Flow<NewsListStateManagment.Effect>?,
-    onNavigationRequested: (itemId: String) -> Unit,
     navController: NavController
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -58,12 +65,16 @@ fun NewsListScreen(
         topBar = {
             CategoriesAppBar(navController)
         },
+        bottomBar = { BottomBar(navController = navController) },
     ) {
-        Box {
-            NewsList(newsData = state.newsList, navController)
-            if (state.isLoading)
-                LoadingBar()
-        }
+        Box(
+            content = {
+                SwipeRefreshing(
+                    state,
+                    navController,
+                )
+            },
+        )
     }
 
 }
@@ -75,7 +86,6 @@ private fun CategoriesAppBar(navController: NavController) {
         actions =
         {
             IconButton(onClick = {
-                //TODO Search action
                 navController.navigate(Screen.Search.route)
             }) {
                     Icon(
@@ -88,6 +98,21 @@ private fun CategoriesAppBar(navController: NavController) {
         }
 
     )
+}
+
+@Composable
+fun SwipeRefreshing(state: NewsListStateManagment.State, navController: NavController) {
+    val viewModel: NewsListViewModel = viewModel()
+    val isRefreshing = viewModel.isRefresh()
+    
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing),
+        onRefresh = { viewModel.isRefresh() },
+    ){
+        NewsList(newsData = state.newsList, navController)
+        if (state.isLoading)
+            LoadingBar()
+    }
 }
 
 @Composable
@@ -163,7 +188,8 @@ private fun ExpandableContentIcon(expanded: Boolean) {
             Icons.Filled.KeyboardArrowDown,
         contentDescription = "Expand row icon",
         modifier = Modifier
-            .padding(all = 16.dp).size(20.dp)
+            .padding(all = 16.dp)
+            .size(20.dp)
     )
 }
 
@@ -220,4 +246,56 @@ fun LoadingBar() {
     ) {
         CircularProgressIndicator()
     }
+}
+
+@Composable
+fun BottomBar(navController: NavController) {
+    val screens = listOf(
+        BottomBarScreen.Home,
+        BottomBarScreen.Settings,
+    )
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    val bottomBarDestination = screens.any { it.route == currentDestination?.route }
+    if (bottomBarDestination) {
+        BottomNavigation {
+            screens.forEach { screen ->
+                AddItem(
+                    screen = screen,
+                    currentDestination = currentDestination,
+                    navController = navController
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RowScope.AddItem(
+    screen: BottomBarScreen,
+    currentDestination: NavDestination?,
+    navController: NavController
+) {
+    BottomNavigationItem(
+        label = {
+            Text(text = screen.title)
+        },
+        icon = {
+            Icon(
+                imageVector = screen.icon,
+                contentDescription = "Navigation Icon"
+            )
+        },
+        selected = currentDestination?.hierarchy?.any {
+            it.route == screen.route
+        } == true,
+        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+        onClick = {
+            navController.navigate(screen.route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
+            }
+        }
+    )
 }

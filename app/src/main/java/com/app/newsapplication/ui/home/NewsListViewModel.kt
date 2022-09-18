@@ -33,6 +33,19 @@ class NewsListViewModel @Inject constructor(
         viewModelScope.launch { getTotalNewsList() }
     }
 
+    fun isRefresh(): Boolean {
+        viewModelScope.launch { getNewsListInRemote() }
+        return false
+    }
+
+    private suspend fun getNewsListInRemote(){
+        var newsData = remoteSource.getNewsList()
+        viewModelScope.launch {
+            state = state.copy(newsList = newsData, isLoading = false)
+            effects.send(NewsListStateManagment.Effect.DataWasLoaded)
+        }
+    }
+
     private suspend fun getTotalNewsList() {
         var newsData = localSource.getAllNews()
         if(newsData.isEmpty()){

@@ -1,8 +1,6 @@
 package com.app.newsapplication.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,6 +9,7 @@ import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.ui.NewsListData
 import com.app.newsapplication.ui.SearchListData
 import com.app.newsapplication.ui.newsdetails.NewsDetailScreen
+import com.app.newsapplication.ui.settings.SettingsScreen
 
 @Composable
 fun SetupNavGraph(navController: NavController) {
@@ -18,11 +17,16 @@ fun SetupNavGraph(navController: NavController) {
     var url: String? = ""
     NavHost(
         navController,
-        startDestination = Screen.Home.route
+        startDestination = BottomBarScreen.Home.route
     ) {
-        composable(route = Screen.Home.route) {
+        composable(route = BottomBarScreen.Home.route) {
             NewsListData(navController)
         }
+
+        composable(route = BottomBarScreen.Settings.route){
+            SettingsScreen(navController = navController)
+        }
+
         composable(route = Screen.NewsDetail.route) {
             val result =
                 navController.previousBackStackEntry?.savedStateHandle?.get<NewsDataDetails>("news")

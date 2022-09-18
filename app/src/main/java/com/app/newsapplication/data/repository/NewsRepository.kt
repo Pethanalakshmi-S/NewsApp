@@ -25,13 +25,15 @@ class NewsRepository @Inject constructor(
     }
 
     suspend fun getNewsList(): List<NewsData> = withContext(Dispatchers.IO) {
-        var cachedCategories = getNewsDatabase()
-        if (cachedCategories.isEmpty()) {
+        var cachedCategories: List<NewsData> = newsApi.getNewsData().mapCategoriesToItems()
+        //var databaseList = getNewsDatabase()
+        //if (databaseList.isEmpty()) {
             Log.d(TAG, "getNewsList: " + Gson().toJson(newsApi.getNewsData().mapCategoriesToItems()))
-            cachedCategories = newsApi.getNewsData().mapCategoriesToItems()
+           // cachedCategories = newsApi.getNewsData().mapCategoriesToItems()
+            newsDAO.clear()
             newsDAO.insertNewsData(cachedCategories)
-            this@NewsRepository.cachedList = cachedCategories
-        }
+         /*   this@NewsRepository.cachedList = cachedCategories
+        }*/
         return@withContext cachedCategories
     }
 
