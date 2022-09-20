@@ -1,27 +1,30 @@
 package com.app.newsapplication.ui.settings
 
-import android.content.ClipData
 import android.widget.Toast
-import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.app.newsapplication.R
 
 
 @Composable
@@ -52,7 +55,8 @@ private fun ToolBar(navController: NavController) {
                     contentDescription = null,
                     tint = Color.White
                 )
-                Text(text = "Account Settings")
+                Text(text = "Account Settings",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically).padding(5.dp))
             }
 
         })
@@ -100,6 +104,7 @@ fun MainScreen() {
 
 @Composable
 fun ListItem(mainClass: MainClass,call:(String)->Unit) {
+    val mRemember = remember { mutableStateOf(false) }
 
     Text(
         text = mainClass.name,
@@ -110,19 +115,112 @@ fun ListItem(mainClass: MainClass,call:(String)->Unit) {
     )
     Column( modifier = Modifier.padding(8.dp)) {
         mainClass.list.forEach {
-            Text(
-                modifier= Modifier.padding(5.dp).clickable { call.invoke(it) },
-                text = it,
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal
+            Row( modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    modifier= Modifier
+                        .clickable { call.invoke(it) },
+                    text = it,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Normal
+                    )
                 )
-            )
+                if(it == "Applock"){
+                    CheckedSwitch("applock")
+                }
+                if(it == "Follow device theme"){
+                    CheckedSwitch("device theme")
+                }
+            }
+
+            if(it == "Choose Theme"){
+                Row(horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)) {
+                    Image(painter = painterResource(id = R.drawable.round_brightness_1_black_24),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(
+                            Color(0xFF3F51B5),
+                            BlendMode.SrcIn
+                        ),
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .height(24.dp))
+
+                    Image(painter = painterResource(id = R.drawable.round_brightness_1_black_24),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(
+                            Color(0xFFE91E63),
+                            BlendMode.SrcIn
+                        ),
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .height(24.dp))
+
+                    Image(painter = painterResource(id = R.drawable.round_brightness_1_black_24),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(
+                            Color(0xFF673AB7),
+                            BlendMode.SrcIn
+                        ),
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .height(24.dp))
+
+                    Image(painter = painterResource(id = R.drawable.round_brightness_1_black_24),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(
+                            Color(0xFF03DAC5),
+                            BlendMode.SrcIn
+                        ),
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .height(24.dp))
+
+                    Image(painter = painterResource(id = R.drawable.round_brightness_1_black_24),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(
+                            Color(0xFFFF5722),
+                            BlendMode.SrcIn
+                        ),
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .height(24.dp))
+
+                    Image(painter = painterResource(id = R.drawable.round_brightness_1_black_24),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(
+                            Color(0xFF3700B3),
+                            BlendMode.SrcIn
+                        ),
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(16.dp))
+                            .height(24.dp))
+                }
+            }
 
         }
     }
 
+}
+
+@Composable
+fun CheckedSwitch(s: String) {
+    val mRemember = remember { mutableStateOf(false) }
+
+    Switch(
+        checked = mRemember.value,
+        onCheckedChange = { mRemember.value = it },
+        enabled = true,
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = Color.Cyan
+        ),
+        modifier = Modifier.padding(0.dp)
+    )
 }
 
 

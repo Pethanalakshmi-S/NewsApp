@@ -36,6 +36,7 @@ import com.app.newsapplication.noRippleClickable
 import com.app.newsapplication.ui.navigation.BottomBarScreen
 import com.app.newsapplication.ui.navigation.Screen
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -101,16 +102,23 @@ private fun CategoriesAppBar(navController: NavController) {
 }
 
 @Composable
-fun SwipeRefreshing(state: NewsListStateManagment.State, navController: NavController) {
+fun SwipeRefreshing(statee: NewsListStateManagment.State, navController: NavController) {
     val viewModel: NewsListViewModel = viewModel()
-    val isRefreshing = viewModel.isRefresh()
-    
     SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing),
+        state = rememberSwipeRefreshState(isRefreshing = false),
         onRefresh = { viewModel.isRefresh() },
+        indicator = { state, trigger ->
+            SwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = trigger,
+                scale = true,
+                contentColor = MaterialTheme.colors.primary,
+                backgroundColor = MaterialTheme.colors.background,
+            )
+        }
     ){
-        NewsList(newsData = state.newsList, navController)
-        if (state.isLoading)
+        NewsList(newsData = statee.newsList, navController)
+        if (statee.isLoading)
             LoadingBar()
     }
 }
