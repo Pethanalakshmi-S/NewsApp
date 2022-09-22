@@ -1,4 +1,26 @@
 <resources>
     <string name="app_name">NewsApplication</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="privacy_security">Privacy &amp; Security</string>
+    <string name="app_lock">Applock</string>
+    <string name="alaytics">Analytics</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="terms_of_use">Terms of use</string>
+    <string name="about">About</string>
+    <string name="about_us">About us</string>
+    <string name="rate_app">Rate app</string>
+    <string name="share">share</string>
+    <string name="clear_cache">Clear cache and Reset app</string>
+    <string name="display_setting">Display settings</string>
+    <string name="widget">Widget</string>
+    <string name="fonts">Fonts</string>
+    <string name="language">Language</string>
+    <string name="themes">Themes</string>
+    <string name="choose_themes">Choose Theme</string>
+    <string name="follow_device_theme">Follow device theme</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="help_center">Help center</string>
+    <string name="resource_faq">Resources and FAQ</string>
+    <string name="data_loaded">News data are loaded.</string>
+
 </resources>

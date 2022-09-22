@@ -2,9 +2,13 @@ package com.app.newsapplication.ui.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.shapes
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.newsapplication.ui.settings.SettingsViewModel
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -26,6 +30,27 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
+
+
+@Composable
+fun CustomTheme(
+    themeViewModel: SettingsViewModel = viewModel(),
+    content: @Composable() () -> Unit,
+) {
+    val colors = when (themeViewModel.theme.value.toString()) {
+        "Dark" -> DarkColorPalette
+        "Light" -> LightColorPalette
+        else -> if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
+    }
+
+    MaterialTheme(
+        colors = colors,
+        typography = typography,
+        shapes = shapes,
+        content = content
+    )
+}
+
 
 @Composable
 fun NewsApplicationTheme(

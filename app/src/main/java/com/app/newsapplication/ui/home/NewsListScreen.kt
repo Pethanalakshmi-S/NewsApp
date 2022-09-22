@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
+import com.app.newsapplication.R
 import com.app.newsapplication.data.localdata.NewsData
 import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
@@ -63,9 +65,21 @@ fun NewsListScreen(
 
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            CategoriesAppBar(navController)
-        },
+        topBar = { CategoriesAppBar(navController) },
+        bottomBar = { BottomBar(navController = navController) },
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            SwipeRefreshing(
+                state,
+                navController,
+            )
+        }
+    }
+
+
+    /*Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = { CategoriesAppBar(navController) },
         bottomBar = { BottomBar(navController = navController) },
     ) {
         Box(
@@ -76,14 +90,14 @@ fun NewsListScreen(
                 )
             },
         )
-    }
+    }*/
 
 }
 
 @Composable
 private fun CategoriesAppBar(navController: NavController) {
     TopAppBar(
-        title = {Text(text = "NewsApp")},
+        title = {Text(text = stringResource(id = R.string.app_name))},
         actions =
         {
             IconButton(onClick = {
@@ -128,11 +142,13 @@ fun NewsList(
     newsData: List<NewsData>,
     navController: NavController
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(bottom = 16.dp)
-    ) {
-        items(newsData) { news ->
-            NewsListRow(item = news, itemShouldExpand = true, navController = navController)
+    Box() {
+        LazyColumn(
+            contentPadding = PaddingValues(bottom = 16.dp),
+        ) {
+            items(newsData) { news ->
+                NewsListRow(item = news, itemShouldExpand = true, navController = navController)
+            }
         }
     }
 }
@@ -267,13 +283,15 @@ fun BottomBar(navController: NavController) {
 
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
     if (bottomBarDestination) {
-        BottomNavigation {
-            screens.forEach { screen ->
-                AddItem(
-                    screen = screen,
-                    currentDestination = currentDestination,
-                    navController = navController
-                )
+        Box() {
+            BottomNavigation {
+                screens.forEach { screen ->
+                    AddItem(
+                        screen = screen,
+                        currentDestination = currentDestination,
+                        navController = navController
+                    )
+                }
             }
         }
     }
