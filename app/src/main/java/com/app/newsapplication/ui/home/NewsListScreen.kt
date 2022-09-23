@@ -2,6 +2,7 @@ package com.app.newsapplication.ui.home
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +38,7 @@ import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
 import com.app.newsapplication.ui.navigation.BottomBarScreen
 import com.app.newsapplication.ui.navigation.Screen
+import com.app.newsapplication.ui.ui.theme.CustomThemeManager
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -76,28 +78,15 @@ fun NewsListScreen(
         }
     }
 
-
-    /*Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = { CategoriesAppBar(navController) },
-        bottomBar = { BottomBar(navController = navController) },
-    ) {
-        Box(
-            content = {
-                SwipeRefreshing(
-                    state,
-                    navController,
-                )
-            },
-        )
-    }*/
-
 }
 
 @Composable
 private fun CategoriesAppBar(navController: NavController) {
     TopAppBar(
-        title = {Text(text = stringResource(id = R.string.app_name))},
+        backgroundColor = CustomThemeManager.colors.buttonBackgroundColor,
+        contentColor = CustomThemeManager.colors.textColor,
+        title = {
+            Text(text = stringResource(id = R.string.app_name)) },
         actions =
         {
             IconButton(onClick = {
@@ -283,7 +272,7 @@ fun BottomBar(navController: NavController) {
 
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
     if (bottomBarDestination) {
-        Box() {
+        Box(Modifier.background(color = CustomThemeManager.colors.buttonBackgroundColor)) {
             BottomNavigation {
                 screens.forEach { screen ->
                     AddItem(

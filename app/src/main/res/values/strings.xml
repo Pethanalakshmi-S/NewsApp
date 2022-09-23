@@ -22,5 +22,5 @@
     <string name="help_center">Help center</string>
     <string name="resource_faq">Resources and FAQ</string>
     <string name="data_loaded">News data are loaded.</string>
-
+    <string name="account_setting">Account Settings</string>
 </resources>

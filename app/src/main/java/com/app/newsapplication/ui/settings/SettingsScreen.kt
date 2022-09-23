@@ -3,6 +3,7 @@ package com.app.newsapplication.ui.settings
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,8 +13,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,44 +29,54 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.app.newsapplication.R
+import com.app.newsapplication.ui.navigation.BottomBarScreen
+import com.app.newsapplication.ui.navigation.Screen
+import com.app.newsapplication.ui.ui.theme.CustomTheme
+import com.app.newsapplication.ui.ui.theme.CustomThemeManager
+import com.app.newsapplication.ui.ui.theme.CustomThemeManager.isSystemInDarkTheme
 
 
 @Composable
 fun SettingsScreen(
-    navController: NavController,
+    navController: NavController
 ) {
-    Scaffold(
-        topBar = {
-            ToolBar(navController)
-        },
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            MainScreen()
+    Surface(color = CustomThemeManager.colors.backgroundColor) {
+        Scaffold(
+            topBar = {
+                ToolBar(navController)
+            },
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                MainScreen()
+            }
         }
     }
 }
 
 @Composable
 private fun ToolBar(navController: NavController) {
-    val textState = remember { mutableStateOf("") }
+    remember { mutableStateOf("") }
     TopAppBar(
+        backgroundColor = CustomThemeManager.colors.buttonBackgroundColor,
         title = {
             Row() {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    modifier = Modifier.padding(5.dp),
+                    modifier = Modifier.padding(5.dp)
+                        .align(alignment = Alignment.CenterVertically)
+                        .clickable {
+                        navController.navigate(BottomBarScreen.Home.route)
+                    },
                     contentDescription = null,
                     tint = Color.White
                 )
-                Text(text = "Account Settings",
+                Text(text = stringResource(id = R.string.account_setting),
                     modifier = Modifier
                         .align(alignment = Alignment.CenterVertically)
                         .padding(5.dp))
             }
-
         })
 }
 
@@ -98,7 +107,7 @@ fun MainScreen() {
     val context = LocalContext.current
 
     val resources = LocalContext.current.resources
-    LazyColumn {
+    LazyColumn(Modifier.background(color = CustomThemeManager.colors.backgroundColor)) {
         items(list) { it ->
             ListItem(mainClass = it){
                 Toast.makeText(context,
@@ -110,12 +119,10 @@ fun MainScreen() {
 
 @Composable
 fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
-    val themeViewModel: SettingsViewModel = viewModel()
-    val theme: String by themeViewModel.theme.observeAsState("")
 
     Text(
         text = stringResource(id = mainClass.name),
-        style = TextStyle(color = Color.White,
+        style = TextStyle(color = CustomThemeManager.colors.textColor,
             fontSize = 20.sp,
             fontWeight = FontWeight.Normal),
         modifier = Modifier.padding(10.dp)
@@ -130,19 +137,19 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
                 Text(
                     modifier= Modifier
                         .clickable {
-                            call.invoke(it.first);
+                            call.invoke(it.first)
                             if(it.first == R.string.dark_theme)
-                            themeViewModel.onThemeChanged("dark")
+                                   CustomThemeManager.customTheme = CustomTheme.DARK
                                    },
                     text = stringResource(id = it.first),
                     style = TextStyle(
-                        color = Color.White,
+                        color = CustomThemeManager.colors.textColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Normal
                     )
                 )
                 if(it.second == 1){
-                    CheckedSwitch(it,theme)
+                    CheckedSwitch(it)
                 }
             }
 
@@ -155,7 +162,7 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
                         contentDescription = "",
                         colorFilter = ColorFilter.tint(
                             color = colorResource(id = R.color.purple),
-                            BlendMode.SrcIn
+                            blendMode = BlendMode.SrcIn
                         ),
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(16.dp))
@@ -165,7 +172,7 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
                         contentDescription = "",
                         colorFilter = ColorFilter.tint(
                             color = colorResource(id = R.color.pink),
-                            BlendMode.SrcIn
+                            blendMode = BlendMode.SrcIn
                         ),
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(16.dp))
@@ -185,7 +192,7 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
                         contentDescription = "",
                         colorFilter = ColorFilter.tint(
                             color = colorResource(id = R.color.teal_200),
-                            BlendMode.SrcIn
+                            blendMode = BlendMode.SrcIn
                         ),
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(16.dp))
@@ -195,7 +202,7 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
                         contentDescription = "",
                         colorFilter = ColorFilter.tint(
                             color = colorResource(id = R.color.orange),
-                            BlendMode.SrcIn
+                            blendMode = BlendMode.SrcIn
                         ),
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(16.dp))
@@ -205,7 +212,7 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
                         contentDescription = "",
                         colorFilter = ColorFilter.tint(
                             color = colorResource(id = R.color.purple_700),
-                            BlendMode.SrcIn
+                            blendMode = BlendMode.SrcIn
                         ),
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(16.dp))
@@ -220,7 +227,7 @@ fun ListItem(mainClass: MainClass,call:(Int)->Unit) {
 
 
 @Composable
-fun CheckedSwitch(pair: Pair<Int, Int>, theme: String) {
+fun CheckedSwitch(pair: Pair<Int, Int>) {
     val mRemember = remember { mutableStateOf(false) }
 
     Switch(
@@ -230,7 +237,14 @@ fun CheckedSwitch(pair: Pair<Int, Int>, theme: String) {
         colors = SwitchDefaults.colors(
             checkedThumbColor = Color.Cyan
         ),
-        modifier = Modifier.padding(0.dp)
+        modifier = Modifier
+            .padding(0.dp)
+            .clickable {
+                if (pair.first == R.string.follow_device_theme) {
+                    var darkTheme: Boolean = isSystemInDarkTheme()
+                    CustomThemeManager.customTheme = CustomTheme.DARK
+                }
+            }
     )
 }
 
