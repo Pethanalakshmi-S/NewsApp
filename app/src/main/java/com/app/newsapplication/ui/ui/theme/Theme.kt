@@ -1,95 +1,46 @@
 package com.app.newsapplication.ui.ui.theme
 
-import androidx.compose.material.Colors
+import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
-
-private val CustomDarkColors = CustomColor(
-    backgroundColor = Black,
-    buttonBackgroundColor = Black,
-    textColor = White,
-    buttonTextColor = Black
-)
-
-private val CustomLightColors = CustomColor(
-    backgroundColor = White,
-    buttonTextColor = White,
-    textColor = Black,
-    buttonBackgroundColor = Purple500
-)
-
-
-private val LocalColorsProvider = staticCompositionLocalOf {
-    CustomLightColors
-}
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import com.app.newsapplication.ui.dataStore
+import com.app.newsapplication.ui.settings.ThemeViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-private fun CustomLocalProvider(
-    colors:CustomColor,
-    content: @Composable() () -> Unit
-){
-    val colorPalette = remember {
-        colors.copy()
-    }
-
-    colorPalette.update(colors)
-    CompositionLocalProvider(LocalColorsProvider provides colorPalette, content = content)
-}
-
-private val CustomTheme.colors: Pair<Colors, CustomColor>
-    get() = when (this){
-        CustomTheme.DARK -> darkColors() to CustomDarkColors
-        CustomTheme.LIGHT -> lightColors() to CustomLightColors
-        CustomTheme.DEFAULT -> TODO()
-    }
-
-object CustomThemeManager {
-    val colors: CustomColor
-        @Composable
-        get() = LocalColorsProvider.current
-
-    var customTheme by mutableStateOf(CustomTheme.LIGHT)
-    fun isSystemInDarkTheme(): Boolean{
-        return customTheme == CustomTheme.DARK
-    }
-}
-
-@Composable
-fun CustomComposeTheme(
-    customTheme: CustomTheme = CustomThemeManager.customTheme,
-    content: @Composable() () -> Unit
-){
-    val (colorPalette, lcColor) = customTheme.colors
-
-    CustomLocalProvider(colors = lcColor) {
-        MaterialTheme(
-            colors = colorPalette,
-            typography = Typography,
-            shapes = Shapes,
-            content = content
-        )
-
-    }
-}
-
-/*
-@Composable
-fun NewsApplicationTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+fun AppTheme(
+    content: @Composable () -> Unit,
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+    val context = LocalContext.current
+    val viewModel = remember { ThemeViewModel(context.dataStore) }
+    val state = viewModel.state.observeAsState()
+    val value = state.value ?: isSystemInDarkTheme()
+    val systemUiController = rememberSystemUiController()
 
+    LaunchedEffect(viewModel) { viewModel.request() }
+
+    if(value) systemUiController.setStatusBarColor(DBlue)
+    else systemUiController.setStatusBarColor(SilverLight)
+
+    DarkThemeValue.current.value = value
     MaterialTheme(
-        colors = colors,
-        typography = Typography,
+        colors = if (value) AppDarkColors else AppLightColors,
+        typography = AppTypography,
         shapes = Shapes,
         content = content
     )
-}*/
+}
+
+@Composable
+@ReadOnlyComposable
+fun isDarkTheme() = DarkThemeValue.current.value
+
+@SuppressLint("CompositionLocalNaming")
+val DarkThemeValue = compositionLocalOf { mutableStateOf(false) }
+
+@Composable
+@ReadOnlyComposable
+infix fun <T> T.orInLightTheme(other: T): T = if (isDarkTheme()) this else other

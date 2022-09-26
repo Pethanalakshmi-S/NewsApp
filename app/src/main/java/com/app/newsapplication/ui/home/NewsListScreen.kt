@@ -20,9 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -38,7 +41,9 @@ import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
 import com.app.newsapplication.ui.navigation.BottomBarScreen
 import com.app.newsapplication.ui.navigation.Screen
-import com.app.newsapplication.ui.ui.theme.CustomThemeManager
+import com.app.newsapplication.ui.ui.theme.Fonts
+import com.app.newsapplication.ui.ui.theme.backgroundColor
+import com.app.newsapplication.ui.ui.theme.captionColor
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -83,10 +88,17 @@ fun NewsListScreen(
 @Composable
 private fun CategoriesAppBar(navController: NavController) {
     TopAppBar(
-        backgroundColor = CustomThemeManager.colors.buttonBackgroundColor,
-        contentColor = CustomThemeManager.colors.textColor,
+        backgroundColor = backgroundColor(),
         title = {
-            Text(text = stringResource(id = R.string.app_name)) },
+            Text(
+                text = stringResource(id = R.string.app_name),
+                textAlign = TextAlign.Start,
+                style = TextStyle(
+                    color = captionColor(),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Normal
+                ),
+            ) },
         actions =
         {
             IconButton(onClick = {
@@ -96,7 +108,7 @@ private fun CategoriesAppBar(navController: NavController) {
                         imageVector = Icons.Default.Search,
                         modifier = Modifier.padding(5.dp),
                         contentDescription = null,
-                        tint = Color.White
+                        tint = captionColor()
                     )
             }
         }
@@ -272,7 +284,7 @@ fun BottomBar(navController: NavController) {
 
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
     if (bottomBarDestination) {
-        Box(Modifier.background(color = CustomThemeManager.colors.buttonBackgroundColor)) {
+        Box(Modifier.background(color = backgroundColor())) {
             BottomNavigation {
                 screens.forEach { screen ->
                     AddItem(

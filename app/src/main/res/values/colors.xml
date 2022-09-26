@@ -11,5 +11,9 @@
     <color name="pink">#FFE91E63</color>
     <color name="purple">#FF3F51B5</color>
     <color name="voilet">#FF673AB7</color>
+    <color name="dark_blue">#0B1729</color>
+    <color name="d_blue">#1F3241</color>
+    <color name="silver_light">#F8F7F8</color>
+
 
 </resources>

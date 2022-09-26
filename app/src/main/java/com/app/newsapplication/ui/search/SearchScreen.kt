@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
+import com.app.newsapplication.R
 import com.app.newsapplication.data.localdata.NewsData
 import com.app.newsapplication.data.model.NewsDataDetails
 import com.app.newsapplication.noRippleClickable
@@ -57,8 +59,8 @@ fun SearchScreen(
         topBar = {
             SearchBar(navController, viewModel)
         },
-    ) {
-        Box {
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
            NewsList(newsData = state.newsList, navController)
             if (state.isLoading)
                LoadingBar()
@@ -77,7 +79,7 @@ private fun SearchBar(navController: NavController, viewModel: SearchViewModel) 
                 viewModel.loadSearchedNews(it.trim())
             },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Search News")}
+            placeholder = { Text(text = stringResource(id = R.string.search_news))}
         )
     }
 }
@@ -154,9 +156,10 @@ private fun ExpandableContentIcon(expanded: Boolean) {
             Icons.Filled.KeyboardArrowUp
         else
             Icons.Filled.KeyboardArrowDown,
-        contentDescription = "Expand row icon",
+        contentDescription = null,
         modifier = Modifier
-            .padding(all = 16.dp).size(20.dp)
+            .padding(all = 16.dp)
+            .size(20.dp)
     )
 }
 

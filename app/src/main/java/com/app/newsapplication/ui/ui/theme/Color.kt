@@ -1,56 +1,45 @@
 package com.app.newsapplication.ui.ui.theme
 
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.annotation.SuppressLint
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 
-enum class CustomTheme{
-    DARK, LIGHT, DEFAULT
-}
+val Red = Color.fromRGB("#FF7C74")
+val Blue = Color.fromRGB("#3F51B5")
+val DarkBlue = Color.fromRGB("#0B1729")
+val Silver20 = Color.fromRGB("#E5E5E5")
+val SilverLight = Color.fromRGB("#F8F7F8")
+val White = Color.fromRGB("#FFFFFF")
+val DBlue = Color.fromRGB("#1F2B3B")
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val orange = Color(0xFFFF5722)
-val pink = Color(0xFFE91E63)
-val Purple = Color(0xFF3F51B5)
-val violet = Color(0xFF673AB7)
-val White = Color(0xFFCCCCCC)
-val Black = Color(0xFF222222)
+@Composable
+fun backgroundColor() = DarkBlue orInLightTheme SilverLight
 
-@Stable
-class CustomColor(
-    backgroundColor: Color,
-    buttonBackgroundColor: Color,
-    textColor: Color,
-    buttonTextColor: Color
-){
-    var backgroundColor by mutableStateOf(backgroundColor)
-    private set
+@Composable
+fun captionColor() = Silver20 orInLightTheme DarkBlue
 
-    var buttonBackgroundColor by mutableStateOf(buttonBackgroundColor)
-    private set
+private fun Color.Companion.fromRGB(rgb: String) = Color(android.graphics.Color.parseColor(rgb))
 
-    var textColor by mutableStateOf(textColor)
-    private set
+@SuppressLint("ConflictingOnColor")
+val AppLightColors = lightColors(
+    primary = Blue,
+    secondary = DarkBlue,
+    background = White,
+    surface = White,
+    onPrimary = White,
+    onBackground = DarkBlue,
+    onSecondary = White,
+)
 
-    var buttonTextColor by mutableStateOf(buttonTextColor)
-    private set
-
-    fun update(colors: CustomColor){
-        this.backgroundColor = colors.backgroundColor
-        this.buttonBackgroundColor = colors.buttonBackgroundColor
-        this.buttonTextColor = colors.buttonTextColor
-        this.textColor = colors.textColor
-    }
-
-    fun copy() = CustomColor(
-        backgroundColor,
-        buttonBackgroundColor,
-        textColor,
-        buttonTextColor
-    )
-}
+@SuppressLint("ConflictingOnColor")
+val AppDarkColors = darkColors(
+    primary = Blue,
+    secondary = White,
+    background = DarkBlue,
+    surface = DarkBlue,
+    onPrimary = DarkBlue,
+    onBackground = Silver20,
+    onSecondary = DarkBlue,
+)

@@ -14,12 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import com.app.newsapplication.data.model.NewsDataDetails
-import com.app.newsapplication.ui.ui.theme.CustomComposeTheme
-import com.app.newsapplication.ui.ui.theme.CustomThemeManager
+import com.app.newsapplication.ui.ui.theme.backgroundColor
 
 @Composable
 fun NewsDetailScreen(
@@ -30,12 +27,12 @@ fun NewsDetailScreen(
     val visibility = remember { mutableStateOf(false)}
     val progress = remember { mutableStateOf(0.0F)}
 
-    Surface(color = CustomThemeManager.colors.buttonBackgroundColor) {
-        Box(Modifier.background(color = CustomThemeManager.colors.backgroundColor)){
+    Surface(color = backgroundColor()) {
+        Box(Modifier.background(color = backgroundColor())){
             AndroidView( modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(color = CustomThemeManager.colors.backgroundColor),
+                .background(color = backgroundColor()),
                 factory = { context ->
                 WebView(context).apply {
                     layoutParams = LinearLayout.LayoutParams(
